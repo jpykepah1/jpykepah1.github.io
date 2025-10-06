@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Inicio de sesión - Club de juegos de pelea</title>
+  <title>Registro - Club de juegos de pelea</title>
   <style>
-    body { font-family: system-ui, Arial, sans-serif; background:#0f0f13; color:#eaeaea; margin:0; }
-    .container { max-width: 420px; margin: 4rem auto; padding: 2rem; background:#16171d; border:1px solid #262833; border-radius:12px; }
-    h1 { font-size: 1.5rem; margin: 0 0 1rem; }
+    body { font-family: Arial, sans-serif; background:#0f0f13; color:#eaeaea; margin:0; }
+    .container { max-width: 450px; margin: 3rem auto; padding: 2rem; background:#16171d; border-radius:12px; }
+    h1 { font-size: 1.6rem; margin-bottom: 1rem; }
     .field { margin-bottom: 1rem; }
     label { display:block; margin-bottom: .4rem; font-weight: 600; }
     input { width: 100%; padding: .7rem; border-radius: 8px; border:1px solid #2c2f3a; background:#121318; color:#eaeaea; }
@@ -21,37 +21,33 @@
 </head>
 <body>
   <div class="container">
-    <h1>Inicia sesión</h1>
-    <form id="loginForm" novalidate>
+    <h1>Crear cuenta</h1>
+    <form id="registerForm" novalidate>
       <div class="field">
         <label for="email">Correo electrónico</label>
         <input id="email" name="email" type="email" placeholder="tu@correo.cl" required />
-        <div class="note">Usa un correo válido.</div>
       </div>
 
       <div class="field">
         <label for="username">Nombre de usuario</label>
         <input id="username" name="username" type="text" placeholder="Ej: ShinFighter" minlength="3" maxlength="20" required />
-        <div class="note">De 3 a 20 caracteres, sin espacios.</div>
       </div>
 
       <div class="field">
         <label for="password">Contraseña</label>
         <input id="password" name="password" type="password" placeholder="••••••••" minlength="8" required />
-        <div class="note">Mínimo 8 caracteres. Recomendado: mayúsculas, minúsculas, números y símbolos.</div>
       </div>
 
       <div class="field">
         <label for="rut">RUT</label>
         <input id="rut" name="rut" type="text" placeholder="12.345.678-5" required
                pattern="^\d{1,2}\.?\d{3}\.?\d{3}-[0-9kK]$" />
-        <div class="note">Formato: 12.345.678-5 (con o sin puntos). El dígito verificador puede ser K.</div>
       </div>
 
-      <div id="errorBox" class="error" aria-live="polite"></div>
+      <div id="errorBox" class="error"></div>
 
-      <button class="btn" type="submit">Entrar</button>
-      <div class="helper">¿No tienes cuenta? Regístrate en la sección de registro.</div>
+      <button class="btn" type="submit">Registrarme</button>
+      <div class="helper">¿Ya tienes cuenta? <a href="login.html" style="color:#3a7afe;">Inicia sesión</a></div>
     </form>
   </div>
 
@@ -68,4 +64,32 @@
         multiplicador = (multiplicador === 7) ? 2 : (multiplicador + 1);
       }
       const resto = suma % 11;
-      const dv = 11
+      const dv = 11 - resto;
+      if (dv === 11) return '0';
+      if (dv === 10) return 'K';
+      return dv.toString();
+    }
+
+    function validarRut(rutCompleto) {
+      const rutLimpio = limpiarRut(rutCompleto);
+      if (rutLimpio.length < 2) return false;
+      const cuerpo = rutLimpio.slice(0, -1);
+      const dv = rutLimpio.slice(-1);
+      return calcularDV(cuerpo) === dv;
+    }
+
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const rut = document.getElementById('rut').value;
+      const errorBox = document.getElementById('errorBox');
+      if (!validarRut(rut)) {
+        errorBox.textContent = "El RUT ingresado no es válido.";
+        return;
+      }
+      errorBox.textContent = "";
+      alert("Registro exitoso 🎮. ¡Bienvenido al club!");
+      // Aquí deberías enviar los datos al servidor con fetch/AJAX
+    });
+  </script>
+</body>
+</html>
