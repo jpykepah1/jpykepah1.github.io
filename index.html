@@ -1,7 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Inicio de sesión - Club de juegos de pelea</title>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; background:#0f0f13; color:#eaeaea; margin:0; }
+    .container { max-width: 420px; margin: 4rem auto; padding: 2rem; background:#16171d; border:1px solid #262833; border-radius:12px; }
+    h1 { font-size: 1.5rem; margin: 0 0 1rem; }
+    .field { margin-bottom: 1rem; }
+    label { display:block; margin-bottom: .4rem; font-weight: 600; }
+    input { width: 100%; padding: .7rem; border-radius: 8px; border:1px solid #2c2f3a; background:#121318; color:#eaeaea; }
+    input:focus { outline: 2px solid #3a7afe; border-color: transparent; }
+    .note { font-size: .85rem; color:#b6b8c4; margin-top: .3rem; }
+    .error { color: #ff6b6b; font-size: .9rem; margin-top: .5rem; }
+    .btn { width:100%; padding:.8rem; margin-top:.5rem; border:0; border-radius:8px; background:#3a7afe; color:white; font-weight:700; cursor:pointer; }
+    .btn:hover { background:#2f66d9; }
+    .helper { font-size: .9rem; text-align:center; margin-top: .8rem; color:#b6b8c4; }
+  </style>
+</head>
 <body>
-<h1>Club MVC3 - Ranking de Jugadores</h1>
-<p>El ranking estará aquí pronto.</p>
-</body>
-</html>
+  <div class="container">
+    <h1>Inicia sesión</h1>
+    <form id="loginForm" novalidate>
+      <div class="field">
+        <label for="email">Correo electrónico</label>
+        <input id="email" name="email" type="email" placeholder="tu@correo.cl" required />
+        <div class="note">Usa un correo válido.</div>
+      </div>
+
+      <div class="field">
+        <label for="username">Nombre de usuario</label>
+        <input id="username" name="username" type="text" placeholder="Ej: ShinFighter" minlength="3" maxlength="20" required />
+        <div class="note">De 3 a 20 caracteres, sin espacios.</div>
+      </div>
+
+      <div class="field">
+        <label for="password">Contraseña</label>
+        <input id="password" name="password" type="password" placeholder="••••••••" minlength="8" required />
+        <div class="note">Mínimo 8 caracteres. Recomendado: mayúsculas, minúsculas, números y símbolos.</div>
+      </div>
+
+      <div class="field">
+        <label for="rut">RUT</label>
+        <input id="rut" name="rut" type="text" placeholder="12.345.678-5" required
+               pattern="^\d{1,2}\.?\d{3}\.?\d{3}-[0-9kK]$" />
+        <div class="note">Formato: 12.345.678-5 (con o sin puntos). El dígito verificador puede ser K.</div>
+      </div>
+
+      <div id="errorBox" class="error" aria-live="polite"></div>
+
+      <button class="btn" type="submit">Entrar</button>
+      <div class="helper">¿No tienes cuenta? Regístrate en la sección de registro.</div>
+    </form>
+  </div>
+
+  <script>
+    function limpiarRut(rut) {
+      return rut.replace(/\./g, '').replace(/-/g, '').toUpperCase();
+    }
+
+    function calcularDV(numero) {
+      let suma = 0;
+      let multiplicador = 2;
+      for (let i = numero.length - 1; i >= 0; i--) {
+        suma += parseInt(numero[i], 10) * multiplicador;
+        multiplicador = (multiplicador === 7) ? 2 : (multiplicador + 1);
+      }
+      const resto = suma % 11;
+      const dv = 11
